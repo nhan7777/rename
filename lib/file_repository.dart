@@ -233,6 +233,14 @@ class FileRepository {
         break;
       }
     }
+
+    for (var i = 0; i < contentLineByLine.length; i++) {
+      if (contentLineByLine[i].contains('<key>CFBundleDisplayName</key>')) {
+        contentLineByLine[i + 1] = '\t<string>$appName</string>\r';
+        break;
+      }
+    }
+
     var writtenFile = await writeFile(
       filePath: iosInfoPlistPath,
       content: contentLineByLine.join('\n'),
@@ -279,7 +287,8 @@ class FileRepository {
     }
     for (var i = 0; i < contentLineByLine!.length; i++) {
       if (contentLineByLine[i].contains('android:label=')) {
-        contentLineByLine[i] = '        android:label=\"$appName\"';
+        contentLineByLine[i] = contentLineByLine[i].toString().replaceFirst(
+            RegExp(r'android:label="(.*?)"'), 'android:label="$appName"');
         break;
       }
     }
